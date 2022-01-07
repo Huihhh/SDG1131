@@ -1,0 +1,17 @@
+**/__pycache__
+**/.DS_Store
+**/.svn
+**/.hg
+*.pyc
+.env
+venv
+
+*.vscode
+*.csv
+*.xlsx
+*.sh
+test*
+
+main.ipynb
+plotChart.py
+file_system_store/
