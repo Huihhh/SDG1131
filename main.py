@@ -5,7 +5,7 @@ import time
 import logging
 from IPython.display import Image
 
-from model.eeModel import Model
+from model.eeModel import *
 from dataset import *
 from model.update_gspread import Gspread
 from model.export_city_definition import ExportModel
@@ -39,10 +39,10 @@ cities = {
     #     {'coords': [[113.2644, 23.1291]], 'adminLevel': 2, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
     # 'Beijing': 
     #     {'coords': [[116.4074, 39.9042]], 'adminLevel': 1, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
-    # 'Mumbai': 
-    #     {'coords': [[72.8217, 18.9756], [72.8423, 19.2027]], 'adminLevel': 2, 'bp_density_th': 55, 'visMin':800, 'visMax': 7000},
-    'Nairobi': 
-        {'coords': [[36.8219, -1.2921]], 'adminLevel': 2, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
+    'Mumbai': 
+        {'coords': [[72.8217, 18.9756], [72.8423, 19.2027]], 'adminLevel': 2, 'bp_density_th': 55, 'visMin':800, 'visMax': 7000},
+    # 'Nairobi': 
+    #     {'coords': [[36.8219, -1.2921]], 'adminLevel': 2, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
     # 'Kigali': 
     #     {'coords': [[30.0619, -1.9441]], 'adminLevel': 1, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
     # 'Lagos': 
@@ -86,7 +86,7 @@ def main(CFG):
     popData = POP_DATA[CFG['popData']]() 
     pop4def = POP_DATA[CFG['pop4def']](cellTH=450, clusterTH=150000)
 
-    periods = [[2000, 2015], [2005, 2010],[2010, 2015]] if CFG['pop4def'] in ['GPWv4', 'WorldPop1k'] else [[2000, 2015]] #[1975, 1990], [1990,2000],
+    periods = [[2000, 2015], [2005, 2010],[2010, 2015]] if CFG['pop4def'] in ['GPWv4', 'WorldPop1k'] else [ [1990,2000], [2000, 2015]] #[1975, 1990], [1990,2000],
     statsList = []
     assetConfis = []
 
@@ -94,33 +94,32 @@ def main(CFG):
         print(f'========================= {name} =======================')
         bpData = BP_DATA[CFG['bp']](th=geo['bp_density_th'])
         for idx, p in enumerate(periods):
-            model = Model(popData, bpData, pop4def, *p)
-            model.update_city(name, geo)
 
             # ====== Get SDG ======
             if CFG['computeSDG']:
-                cdAsset = f"projects/gisproject-1/assets/CityDefinition_{CFG['pop4def'].replace(' ', '')}/{name.replace(' ', '_')}{p[1]}"
+                cdAsset = f"projects/gisproject-1/assets/CityDefinition_GHSpop1km/{name.replace(' ', '_')}{p[1]}"
+                # cdAsset = f"projects/gisproject-1/assets/CityDefinition_{CFG['pop4def'].replace(' ', '')}/{name.replace(' ', '_')}{p[1]}"
                 try:
-                    model.cityDef[pop4def.name + str(model.endYear)] = ee.FeatureCollection(cdAsset)
+                    cityDef = ee.FeatureCollection(cdAsset)
                     # model.cityDef[pop4def.name + str(model.endYear)] = ee.FeatureCollection(f"users/omegazhanghui/CityDefinition_GHSpop1k/{name.replace(' ', '_')}{p[1]}")
                     # model.cityDef[model.endYear] = ee.FeatureCollection(f'users/clarahuebinger/DUG/Dubai_{p[1]}')
-                    mask = model.cityDef[pop4def.name+ str(model.endYear)].getInfo()
+                    mask = cityDef.getInfo()
                 except Exception as e:
                     print(e)
                     raise Exception(f"City Definition not found: {cdAsset}")
-                stats = model.computeSDG().getInfo()
+                stats = computeSDG(bpData, popData, *p, cityDef).getInfo()
                 statsList.append(['EE App', *p, name, 0, pop4def.name, popData.name, bpData.name] + stats)
 
             # ====== Get city definitions ======
             if CFG['exportDef']:
-                def2 = model.define_city(model.endYear)
+                def2 = define_city(p[-1])
                 feature = def2[-2]['eeObject']
-                assetConfis.append({'feature': feature, 'name': name, 'year': model.endYear})
+                assetConfis.append({'feature': feature, 'name': name, 'year': p[-1]})
 
     if CFG['computeSDG']:
         df = pd.DataFrame(statsList, columns=COLUMNS)
         df.to_csv('stats.csv')
-        gspread = Gspread(sheet_name='City_Definition_SDG11.3.1_Calculations')
+        gspread = Gspread(sheet_id='1AmMWSf3tcgVofAGqH0H0jJVWLSnnX2A60RFzvJlYXgU', sheet_name='SDG11.3.1_Calculations')
         gspread.update_gspread(df)
 
     if CFG['exportDef']:
@@ -129,9 +128,9 @@ def main(CFG):
 
 if __name__ == '__main__':
     CFG = {
-        'popData': SCB_POP['name'],
+        'popData': GHS_POP_250m['name'],
         'pop4def': GHS_POP_1km['name'],
-        'bp': GHS_BUILT_38m['name'],
+        'bp': GAIA_10m['name'],
 
         'computeSDG': True,
         'exportDef': False,

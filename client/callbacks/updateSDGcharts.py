@@ -141,7 +141,7 @@ def update_graphs(rows, derived_virtual_selected_rows, selected_cities, filter, 
               for i in range(len(dff))]      
     colors4 = ['#8f00b3' if i in derived_virtual_selected_rows else '#8f00b3'
               for i in range(len(dff))]      
-    colors = [colors1, colors3, colors4, colors2]        
+    colors = [colors4, colors1, colors3, colors2]        
 
     def make_xaxis(city, comp, colValue):
         if comp['label'] == 'Compare Population Growth data':
@@ -184,7 +184,7 @@ def update_graphs(rows, derived_virtual_selected_rows, selected_cities, filter, 
     if COMPARE[idx]['label'] == 'Compare Population Growth data':
         updates = [dcc.Graph(
             id='compare-pop-growth-data',
-            figure=make_figure(dff, selected_cities, comp, 'SDG 11.3.1', colors),
+            figure=make_figure(dff, selected_cities, comp, 'pop - T2', colors),
             style={'width': '100%', 'height': '90vh'}
         ) if compare_tab(selectedTab, comp['label']) else no_update for comp in COMPARE]
         # updates = [dcc.Graph(

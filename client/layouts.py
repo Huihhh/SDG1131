@@ -31,6 +31,8 @@ filterSDG = html.Div([
 ])
 
 layout = html.Div([
+    dcc.Location(id='url', refresh=False),
+    dcc.Location(id='redirect', refresh=True),
     menubar, 
     dbc.Row([
         dbc.Col(filters, md=4),
