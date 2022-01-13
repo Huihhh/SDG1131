@@ -78,20 +78,19 @@ def update_gspread(res, startYear, endYear, adminLevel, ROIdata, bpName, popName
     State('export-option', 'value'),
     State('year-dropdown-select', 'value'),
     State("map-center", 'data'),
-    State('pop4def-obj', 'data'),
+    State('pop4def-radioItem', 'value'),
+    State('cell-TH-state', 'value'),
+    State('cluster-TH-state', 'value'),   
     State('cityDef-obj', 'data'),
     prevent_initial_call=True,
 )
-def export_city_definition(n_click, exportOpt, year, ROIdata, pop4def, cityDef):
+def export_city_definition(n_click, exportOpt, year, ROIdata, pop4def, cellTH, clusterTH, cityDef):
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
     export = True if 'export-city-definition' in changed_id else False # if export button is most recently clicked
     if export:
-        pop4def = pop4def.name
-        cellTH = pop4def.cellTH
-        clusterTH = pop4def.clusterTH
         exportModel = ExportModel(asset_base=f"projects/gisproject-1/assets/CityDefinition_{pop4def.replace(' ', '')}")
         exportMethod = exportModel.export_asset if exportOpt == 'projAsset' else exportModel.download_geojson      
-        res = exportMethod([{'feature': cityDef, 'name': ROIdata['adminName'], 'year': year, 'cellTH': cellTH, 'clusterTH': clusterTH}])     
+        res = exportMethod([{'feature': cityDef[pop4def+str(year)], 'name': ROIdata['adminName'], 'year': year, 'cellTH': cellTH, 'clusterTH': clusterTH}])     
         if exportOpt == 'projAsset': 
             res = res[0]
             is_open = not not res._result
