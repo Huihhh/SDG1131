@@ -13,6 +13,7 @@ class WSF1519:
     def __init__(self, *args, **kwargs):
         self.visParam = {'opacity': 0.4, 'palette': ['green']}
         self.data = ee.Image(self.src19)
+        self.scale = self.data.projection().nominalScale()
     
 
     def queryImageByYearAndROI(self, year, roi):

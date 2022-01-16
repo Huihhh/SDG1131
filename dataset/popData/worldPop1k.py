@@ -3,7 +3,7 @@ from .utils import setYear
 class WorldPop1k:
     # resolution: 1km, coverage: Chinese cities
     name = 'WorldPop 1km'
-    src = 'projects/gisproject-1/assets/World_POP_1km' #'users/omegazhanghui/WorldPop1k'
+    src = 'projects/gisproject-1/assets/World_POP_1km_unadj' #'users/omegazhanghui/WorldPop1k'
     years = [2000, 2005 ,2010, 2015, 2019]
     # cities = ['Beijing', 'Shanghai', 'Tianjin', 'Guangzhou']
     crs = 'EPSG:54009'
@@ -17,3 +17,7 @@ class WorldPop1k:
         self.cellTH = cellTH
         self.clusterTH = clusterTH
         self.data = ee.ImageCollection(self.src)#.map(renamePopBand)
+        self.scale = self.data.first().projection().nominalScale()
+
+    def queryImageByYearAndROI(self, year, roi):
+        return self.data.filter(ee.Filter.eq('year', year)).filterBounds(roi).first()

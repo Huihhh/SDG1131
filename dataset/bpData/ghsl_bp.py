@@ -8,6 +8,7 @@ class GHSbp38:
     resolution = 38
     
     def __init__(self, *args, **kwargs):
+        self.scale = ee.Image(self.src).select('built').projection().nominalScale()
         self.visParam = {'opacity': 0.4, 'bands': ['built'], 'palette': ['#0074D9']}
     
     @classmethod

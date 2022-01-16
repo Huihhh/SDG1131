@@ -8,6 +8,7 @@ class GAIA:
     resolution = 30
 
     def __init__(self, *args, **kwargs):
+        self.scale = ee.Image(self.src).projection().nominalScale()
         self.visParam = {'opacity': 0.4, 'bands': ['change_year_index'], 'palette': ['red']}
 
     @classmethod

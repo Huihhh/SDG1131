@@ -14,3 +14,7 @@ class GHSpop250:
 
     def __init__(self):
         self.data = ee.ImageCollection(self.src).map(setYear)
+        self.scale =self.data.first().projection().nominalScale()
+    
+    def queryImageByYearAndROI(self, year, roi):
+        return self.data.filter(ee.Filter.eq('year', year)).filterBounds(roi).first()

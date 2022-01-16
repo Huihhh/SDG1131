@@ -32,6 +32,7 @@ def update_map_center(cityName, n_clicks, adminLevel, drawnPoly, data): #TODO: i
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
     drawROI = True if 'draw-roi' in changed_id else False 
     data = data or {'useAdmin': True, 'cityName': None}
+    print(drawnPoly)
 
     if drawROI: # if use draw ROI
         roi = ee.FeatureCollection(drawnPoly).geometry()

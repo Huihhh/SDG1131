@@ -15,14 +15,8 @@ class GHSpop1k:
     def __init__(self, cellTH=300, clusterTH=5000):
         self.cellTH = cellTH
         self.clusterTH = clusterTH
-        # def addYearProp_and_renamePopBand(img):
-        #     return ee.Image(img.setMulti({'year': ee.String(img.get('system:index')).slice(9, 13)})) \
-        #                         .select('b1') \
-        #                         .rename('population_count')
+        self.data = ee.ImageCollection(self.src)
+        self.scale = self.data.first().projection().nominalScale()
 
-        # def addStartTimeProp(img):
-        #     return img.setMulti({
-        #         'system:time_start': ee.Date(img.get('year')).millis()
-        #         })
-        self.data = ee.ImageCollection(self.src)#.map(addYearProp_and_renamePopBand) \
-                #    .map(addStartTimeProp)
+    def queryImageByYearAndROI(self, year, roi):
+        return self.data.filter(ee.Filter.eq('year', year)).filterBounds(roi).first()

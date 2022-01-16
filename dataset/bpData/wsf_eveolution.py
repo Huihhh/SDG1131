@@ -13,6 +13,7 @@ class WSF_evolution:
     def __init__(self, *args, **kwargs):
         self.visParam = {'opacity': 0.4, 'palette': ['green']}
         self.data = ee.ImageCollection(self.src)
+        self.scale = self.data.first().projection().nominalScale()
     
 
     def queryImageByYearAndROI(self, year, roi):

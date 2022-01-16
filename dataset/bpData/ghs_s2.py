@@ -8,6 +8,7 @@ class GHS_S2:
     resolution = 10
 
     def __init__(self, *args, **kwargs):
+        self.scale = ee.FeatureCollection(self.src).first().projection().nominalScale()
         self.visParam = {'opacity': 0.3, 'bands': ['built'], 'palette': ['grey']}
 
     @classmethod

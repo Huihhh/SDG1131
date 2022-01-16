@@ -108,17 +108,12 @@ def queryBaseImg(roi, year):
     return medianImg, vmin, vmax
 
 def get_pop_img(popData, cityCoords, cityBounds, year):
-    return popData.data.filter(ee.Filter.eq("year", year)) \
-                            .filterBounds(cityCoords) \
-                            .first() \
+    return popData.queryImageByYearAndROI(year, cityBounds) \
                             .clip(cityBounds)
 
 
 def define_city(pop4def, year, cityCoords, city, useAdmin):
-    popRaster_raw = pop4def.data \
-                            .filter(ee.Filter.eq("year", year)) \
-                            .filterBounds(cityCoords) \
-                            .first() \
+    popRaster_raw = pop4def.queryImageByYearAndROI(year, cityCoords) \
                             .clip(city)
     #*************************************** Urban cluster **********************************************************#
     # filter out cells with pop counts smaller than 300 (1km) / 18.75 (250m)
@@ -139,7 +134,6 @@ def define_city(pop4def, year, cityCoords, city, useAdmin):
         'collection': urbanCluster,
         'reducer': ee.Reducer.sum(),
         'scale': 1000,
-        # 'crs': 'EPSG:4326',
             # filter out small clusters with a total pop counts less than 5000 \
         }).filter(ee.Filter.gt('sum', int(pop4def.clusterTH)))#.map(computeAreaFromPoly) \
         # .sort('area', False) \
@@ -161,15 +155,13 @@ def define_city(pop4def, year, cityCoords, city, useAdmin):
     return urbanCluster_poly
 
 def computePop(popData, year, cityBoundary):
-    return popData.data.filter(ee.Filter.eq("year", year)) \
-                    .filterBounds(cityBoundary) \
-                    .first() \
+    return popData.queryImageByYearAndROI(year, cityBoundary) \
                     .clip(cityBoundary) \
                     .reduceRegion(**{'reducer':ee.Reducer.sum(),
                         'geometry':cityBoundary,
-                        # 'scale': 100,
+                        'scale': popData.scale,
                         'maxPixels': 1e8,}).get(popData.popBand)
-                        # 'crs': self.popData.projection()}) \
+                         # 'crs': self.popData.projection()}) \
 
 
 def computeArea(bpData, year, cityBoundary):
@@ -180,7 +172,7 @@ def computeArea(bpData, year, cityBoundary):
         'reducer': ee.Reducer.sum(),
         'geometry': cityBoundary,
         'maxPixels': 1e12,
-        'scale': bpData.resolution,
+        'scale': bpData.scale,
         # 'crs': self.bpData.crs if self.bpData.name == 'GHS 250' else None,
         # 'scale': 250 if self.bpData.name == 'GHS 250' else None
     })

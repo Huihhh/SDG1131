@@ -8,8 +8,9 @@ class GHSbp250:
     
 
     def __init__(self, th=40, crs='EPSG:4326'):
-        self.crs = crs
+        self.crs = ee.FeatureCollection(self.src).first().projection().crs()
         self.th = th
+        self.scale = ee.FeatureCollection(self.src).first().projection().nominalScale()
         self.visParam = {'opacity': 0.5, 'bands': ["b1"], 'palette': ['#ff9933']}
     
     def queryImageByYearAndROI(self, year, roi):

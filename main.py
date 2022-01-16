@@ -31,16 +31,16 @@ POP_DATA = {
 }
 
 cities = {
-    # 'Stockholm': 
-    #     {'coords': [[18.0686, 59.3293]], 'adminLevel': 1, 'bp_density_th': 56, 'visMin':800, 'visMax': 7000},
+    'Stockholm': 
+        {'coords': [[18.0686, 59.3293]], 'adminLevel': 1, 'bp_density_th': 56, 'visMin':800, 'visMax': 7000},
     # 'Dubai': 
     #     {'coords': [[55.2708, 25.2048]], 'adminLevel': 1, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
     # 'Guangzhou': 
     #     {'coords': [[113.2644, 23.1291]], 'adminLevel': 2, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
     # 'Beijing': 
     #     {'coords': [[116.4074, 39.9042]], 'adminLevel': 1, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
-    'Mumbai': 
-        {'coords': [[72.8217, 18.9756], [72.8423, 19.2027]], 'adminLevel': 2, 'bp_density_th': 55, 'visMin':800, 'visMax': 7000},
+    # 'Mumbai': 
+    #     {'coords': [[72.8217, 18.9756], [72.8423, 19.2027]], 'adminLevel': 2, 'bp_density_th': 55, 'visMin':800, 'visMax': 7000},
     # 'Nairobi': 
     #     {'coords': [[36.8219, -1.2921]], 'adminLevel': 2, 'bp_density_th': 40, 'visMin':800, 'visMax': 7000},
     # 'Kigali': 
@@ -118,9 +118,10 @@ def main(CFG):
 
     if CFG['computeSDG']:
         df = pd.DataFrame(statsList, columns=COLUMNS)
+        print(df)
         df.to_csv('stats.csv')
-        gspread = Gspread(sheet_id='1AmMWSf3tcgVofAGqH0H0jJVWLSnnX2A60RFzvJlYXgU', sheet_name='SDG11.3.1_Calculations')
-        gspread.update_gspread(df)
+        # gspread = Gspread(sheet_id='1AmMWSf3tcgVofAGqH0H0jJVWLSnnX2A60RFzvJlYXgU', sheet_name='SDG11.3.1_Calculations')
+        # gspread.update_gspread(df)
 
     if CFG['exportDef']:
         exportModel = ExportModel(asset_base=f"projects/gisproject-1/assets/CityDefinition_{CFG['pop4def']}")
@@ -130,7 +131,7 @@ if __name__ == '__main__':
     CFG = {
         'popData': GHS_POP_250m['name'],
         'pop4def': GHS_POP_1km['name'],
-        'bp': GAIA_10m['name'],
+        'bp': GHS_BUILT_38m['name'],
 
         'computeSDG': True,
         'exportDef': False,
