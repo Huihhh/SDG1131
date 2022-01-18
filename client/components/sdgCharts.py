@@ -1,20 +1,7 @@
 from dash import dcc
 from dash import html
 
-from ..constants import COMPARE, CITIES
-
-
-
-    # dbc.Row([        
-    #     dbc.Col(
-    #         dbc.Card([
-    #             dbc.CardHeader('Filters'),
-    #             dbc.CardBody([filterSDG]),
-    #         ]), 
-    #         md=4
-    #     ),
-    # ]),
-
+from ..constants import COMPARE
 
 sdgCharts = dcc.Tabs([
                 dcc.Tab(label=comp['label'], children=[

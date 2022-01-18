@@ -1,11 +1,13 @@
+from client.user import User
 from dash.dependencies import Input, Output, State
 import pandas as pd
 from dash import dcc, callback_context
 from dash.exceptions import PreventUpdate
+from flask_login import current_user
 
 from ..app import app
 from ..constants import CITY_CONFIGS, COLUMNS
-from ..database import DATASET
+from ..db import DATASET
 from model.eeModel import *
 from model.export_city_definition import ExportModel
 from model.update_gspread import Gspread
@@ -63,7 +65,9 @@ def update_gspread(res, startYear, endYear, adminLevel, ROIdata, bpName, popName
         raise PreventUpdate
     adminLevel = adminLevel if ROIdata['useAdmin'] else 0
     newDf = pd.DataFrame([['EE App', startYear, endYear, ROIdata['adminName'], adminLevel, pop4defName, popName, bpName] + res], columns=COLUMNS)
-    gspread.update_gspread(newDf)
+    if current_user.is_anthenticated:
+        User.add_record(newDf.to_dict('records')[0])
+    # gspread.update_gspread(newDf)
     message = 'Sheet updated!'
     return message
 

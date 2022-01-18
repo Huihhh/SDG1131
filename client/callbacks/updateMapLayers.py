@@ -8,8 +8,7 @@ import functools
 
 from model.eeModel import *
 from ..app import app
-from ..constants import CITY_CONFIGS 
-from ..database import DATASET
+from ..constants import CITY_CONFIGS, DATASET
 
 def get_tile_url(mapid):
     return "https://earthengine.googleapis.com/v1alpha/" + mapid + "/tiles/{z}/{x}/{y}"

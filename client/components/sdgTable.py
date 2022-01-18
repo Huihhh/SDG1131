@@ -1,8 +1,8 @@
 from dash import html
 from dash import dash_table 
-import pandas as pd
+from dash import dcc
 
-from ..database import df
+from client.constants import COLUMNS
 
 
 def data_bars(df, column):
@@ -107,16 +107,18 @@ def data_bars_diverging(df, column, color_above='#3D9970', color_below='#FF4136'
 
 
 sdgTable = html.Div(children=[
-        dash_table.DataTable(
+    dcc.Store(id='sdg-records'),
+    dcc.Store(id='result-df'),
+    dash_table.DataTable(
         id='datatable-interactivity',
         columns=[
-            {"name": i, "id": i, "deletable": True, "selectable": True} for i in df.columns
+            {"name": i, "id": i, "deletable": True, "selectable": True} for i in COLUMNS
         ],
-        style_data_conditional=(
-            data_bars_diverging(df, 'SDG 11.3.1') +
-            data_bars_diverging(df, 'Delta Built Up')
-        ),
-        data=df.to_dict('records'),
+        # style_data_conditional=(
+        #     data_bars_diverging(df, 'SDG 11.3.1') +
+        #     data_bars_diverging(df, 'Delta Built Up')
+        # ),
+        # data=df.to_dict('records'),
         editable=True,
         filter_action="native",
         sort_action="native",

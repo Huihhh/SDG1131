@@ -1,3 +1,4 @@
+from dataset import *
 # bp data
 GAIA_10m = {
     'name': 'GAIA 30m', 
@@ -70,6 +71,25 @@ SCB_POP = {
 BP_DATA = [GHS_BUILT_38m,  WSFevo_30m, WSF1519_10m, GAIA_10m] # GHS_BUILT_250m, WSF_30m
 PG_DATA = [WORLD_POP_100m, GHS_POP_250m, GPWV4_30arc]
 CD_DATA = [GHS_POP_1km, GPWV4_30arc, WORLD_POP_1km]
+
+
+DATASET = {
+    ## Builtup data
+    GAIA_10m['name']: GAIA,
+    GHS_BUILT_38m['name']: GHSbp38,
+    # GHS_BUILT_250m['name']: GHSbp250,
+    WSFevo_30m['name']: WSF_evolution,
+    WSF1519_10m['name']: WSF1519,
+    GHS_BUILT_S2_10m['name']: GHS_S2,
+    ## Pop for city definition
+    GHS_POP_1km['name']: GHSpop1k,
+    GPWV4_30arc['name']: GPWv4,
+    ## Pop for pop growth
+    GHS_POP_250m['name']: GHSpop250,
+    WORLD_POP_100m['name']: WorldPop100,
+    WORLD_POP_1km['name']: WorldPop1k,
+
+}
 
 COMPARE = [  
     {

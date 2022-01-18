@@ -1,9 +1,10 @@
 from dash import html
 import dash_leaflet as dl
 import dash_core_components as dcc
-import sd_material_ui as dm 
+import sd_material_ui as dm
+import os
 
-from ..config import mapbox_access_token
+from ..config import MAPBOX_ACCESS_TOKEN
 
 mapContainer = html.Div([
         dcc.Store(id='map-center', storage_type='session'),
@@ -11,11 +12,10 @@ mapContainer = html.Div([
         dcc.Store(id='popData-obj', storage_type='session'),
         dcc.Store(id='bpData-obj', storage_type='session'),
         dcc.Store(id='cityDef-obj'),
-        dcc.Store(id='result-df'),
         dm.Snackbar(id='alert-result-status', message='', open=False),
         dl.Map(
             children=[
-                # dl.TileLayer(url='http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + mapbox_access_token),   
+                # dl.TileLayer(url='http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_ACCESS_TOKEN),   
                 # Edit control 
                 dl.FeatureGroup(
                     children=[

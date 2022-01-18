@@ -10,29 +10,23 @@ import json
 from flask import Flask, redirect, request, url_for
 from oauthlib.oauth2 import WebApplicationClient
 import requests
-# from flask_login import (
-#     LoginManager,
-#     current_user,
-#     login_required,
-#     login_user,
-#     logout_user,
-# )
+from flask_login import (
+    LoginManager,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 
-from apiConfig.eeAuth import credentials
+
+from config import credentials, cred_obj, GOOGLE_CLIENT_ID, GOOGLE_DISCOVERY_URL, GOOGLE_CLIENT_SECRET
+from user import User
 # ee.Authenticate()
 ee.Initialize(credentials)
 
-from client.constants import CITY_CONFIGS
-
-# Configuration
-GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
-GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", None)
-GOOGLE_DISCOVERY_URL = (
-    "https://accounts.google.com/.well-known/openid-configuration"
-)
-
 # OAuth2 client setup
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
+
 
 # Exposing the Flask Server to enable configuring it for logging in
 server = flask.Flask(__name__)
@@ -63,7 +57,7 @@ def login():
         redirect_uri=request.base_url + "/callback",
         scope=["openid", "email", "profile"],
     )
-    print(request_uri)
+    print(f'request_uri   {__name__}', request_uri)
     return redirect(request_uri)
 
 
@@ -71,7 +65,6 @@ def login():
 def callback():
     # Get authorization code Google sent back to you
     code = request.args.get("code")
-    print(code)
 
     # Find out what URL to hit to get tokens that allow you to ask for
     # things on behalf of a user
@@ -101,6 +94,7 @@ def callback():
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers=headers, data=body)
+    print('==============', userinfo_response.json())
 
     # We want to make sure their email is verified.
     # The user authenticated with Google, authorized our
@@ -113,25 +107,25 @@ def callback():
     else:
         return "User email not available or not verified by Google.", 400
 
-    # # Create a user in our db with the information provided
-    # # by Google
-    # user = User(
-    #     id_=unique_id, name=users_name, email=users_email, profile_pic=picture
-    # )
+    # Create a user in our db with the information provided
+    # by Google
+    user = User(
+        id_=unique_id, name=users_name, email=users_email, profile_pic=picture
+    )
 
-    # # Doesn't exist? Add to database
-    # if not User.get(unique_id):
-    #     User.create(unique_id, users_name, users_email, picture)
+    # Doesn't exist? Add to database
+    if not User.get(unique_id):
+        User.create(unique_id, users_name, users_email, picture)
 
-    # # Begin user session by logging the user in
-    # login_user(user)
+    # Begin user session by logging the user in
+    login_user(user)
 
     # Send user back to homepage
     return redirect(url_for("index"))
 
 
 @server.route("/logout")
-# @login_required
+@login_required
 def logout():
     logout_user()
     return redirect(url_for("index"))

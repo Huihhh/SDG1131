@@ -3,21 +3,30 @@ import itertools
 import pandas as pd
 from dash.dependencies import Input, Output, State
 import plotly.express as px
+from flask_login import current_user
 
-from ..constants import CITY_CONFIGS, COMPARE
-from ..database import df, DATASET
+from client.user import User
+from ..constants import COMPARE
+from ..db import df
 from ..app import app
+
+@app.callback(
+    Output('sdg-records', 'data'),
+    Input('loc-url', 'pathname')
+)
+def update_db_store(pathname):
+    if pathname == '/' and current_user.is_authenticated:
+        data = User.get_records(current_user.id)
+    return pd.DataFrame(data).to_dict('index')
 
 @app.callback(
     Output('datatable-interactivity', "data"),
     Input('city-dropdown-select', 'value'),
-    Input('pop4def-radioItem', 'value'),
-    Input('pop-radioItem', 'value'),
-    Input('built-radioItem', 'value')
+    Input('sdg-records', 'data'),
 )
-def update_table(selected_cities, pop4def, pop, bp):
+def update_table(selected_cities, data):
+    df = pd.DataFrame.from_dict(data, orient='index').round(3)
     dff = df[df.AOI.isin(selected_cities)].sort_values(by=['Built-Up', 'T1'])
-    # dff = dff[(dff['City Definition'] == pop4def) & (dff['Population'] == pop) & (dff['Built-Up'] == bp) ]
     print(len(dff))
     return dff.to_dict('records')
 
@@ -115,9 +124,10 @@ def make_figure(dff, city, comp, yCol, colors):
     Input('datatable-interactivity', "derived_virtual_selected_rows"),
     Input('city-dropdown-select', 'value'),
     Input('datatable-interactivity', "filter_query"),
-    Input('res-tabs', 'value')
+    Input('res-tabs', 'value'),
+    Input('sdg-records', 'data'),
 )
-def update_graphs(rows, derived_virtual_selected_rows, selected_cities, filter, selectedTab):
+def update_graphs(rows, derived_virtual_selected_rows, selected_cities, filter, selectedTab, data):
     # When the table is first rendered, `derived_virtual_data` and
     # `derived_virtual_selected_rows` will be `None`. This is due to an
     # idiosyncrasy in Dash (unsupplied properties are always None and Dash
@@ -129,7 +139,8 @@ def update_graphs(rows, derived_virtual_selected_rows, selected_cities, filter, 
     # the component.
     if derived_virtual_selected_rows is None:
         derived_virtual_selected_rows = []
-    
+
+    df = pd.DataFrame.from_dict(data, orient='index').round(3)
 
     dff = df if rows is None else pd.DataFrame(rows)
 

@@ -3,7 +3,7 @@ import pandas as pd
 from gspread_pandas import Spread, Client, conf
 
 from apiConfig.eeAuth import key
-from client.database import read_gspread
+from client.db import read_gspread
 
 
 class Gspread:
