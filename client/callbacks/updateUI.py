@@ -1,7 +1,6 @@
 from dash.dependencies import Input, Output, State
 from ..app import app
-from ..database import DATASET, CD_DATA, PG_DATA, BP_DATA, WORLD_POP_1km
-from ..constants import CITY_CONFIGS
+from ..constants import CITY_CONFIGS, DATASET, CD_DATA, PG_DATA, BP_DATA, WORLD_POP_1km
 
 # ======================= Update UI =======================
 @app.callback(

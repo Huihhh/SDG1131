@@ -1,9 +1,10 @@
 from dash import html
 import dash_leaflet as dl
 import dash_core_components as dcc
-import sd_material_ui as dm 
+import sd_material_ui as dm
+import os
 
-from ..config import mapbox_access_token
+from ..config import MAPBOX_ACCESS_TOKEN
 
 mapContainer = html.Div([
         dcc.Store(id='map-center', storage_type='session'),
@@ -11,11 +12,10 @@ mapContainer = html.Div([
         dcc.Store(id='popData-obj', storage_type='session'),
         dcc.Store(id='bpData-obj', storage_type='session'),
         dcc.Store(id='cityDef-obj'),
-        dcc.Store(id='result-df'),
         dm.Snackbar(id='alert-result-status', message='', open=False),
         dl.Map(
             children=[
-                # dl.TileLayer(url='http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + mapbox_access_token),   
+                # dl.TileLayer(url='http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_ACCESS_TOKEN),   
                 # Edit control 
                 dl.FeatureGroup(
                     children=[
@@ -27,7 +27,7 @@ mapContainer = html.Div([
                 ),
                 
                 dl.LayersControl(children=[
-                    dl.BaseLayer(dl.TileLayer(url='http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + mapbox_access_token), name='Satellite', checked=True),
+                    dl.BaseLayer(dl.TileLayer(url='http://a.tiles.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token=' + MAPBOX_ACCESS_TOKEN), name='Satellite', checked=True),
                     dl.BaseLayer(dl.TileLayer(url='http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}&s=Ga'), name='Hybrid', checked=False),
                     dl.Overlay(dl.TileLayer(id='base-tile', opacity=1), checked=True, name='Satellite', id='base-overlay'),
                     dl.Overlay(dl.TileLayer(id='bp-tile', opacity=1), checked=True, name='Built-up', id='bp-overlay'),

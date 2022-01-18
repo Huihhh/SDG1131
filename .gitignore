@@ -16,3 +16,5 @@ main.ipynb
 plotChart.py
 file_system_store/
 **/data/
+.ssh/
+.vs/

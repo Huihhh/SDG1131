@@ -2,8 +2,11 @@ import json
 import pandas as pd
 from gspread_pandas import Spread, Client, conf
 
-from apiConfig.eeAuth import key
-from client.database import read_gspread
+from client.config import PRIVATE_KEY
+
+def read_gspread(sheet_id, sheet_name):
+    url = f'https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}'
+    return pd.read_csv(url)
 
 
 class Gspread:
@@ -42,7 +45,7 @@ class Gspread:
         # ================== Write sheet ========================
         # 'Example Spreadsheet' needs to already exist and your user must have access to it
         # This will ask to authenticate if you haven't done so before
-        spread = Spread(self.sheet_id, config=json.loads(key))
+        spread = Spread(self.sheet_id, config=json.loads(PRIVATE_KEY))
 
         # Save DataFrame to worksheet 'New Test Sheet', create it first if it doesn't exist
         spread.df_to_sheet(df, index=False, sheet=self.sheet_name, start='A1', replace=False, freeze_headers=True)

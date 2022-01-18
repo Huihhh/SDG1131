@@ -8,8 +8,7 @@ import functools
 
 from model.eeModel import *
 from ..app import app
-from ..constants import CITY_CONFIGS 
-from ..database import DATASET
+from ..constants import CITY_CONFIGS, DATASET
 
 def get_tile_url(mapid):
     return "https://earthengine.googleapis.com/v1alpha/" + mapid + "/tiles/{z}/{x}/{y}"
@@ -32,7 +31,7 @@ def update_map_center(cityName, n_clicks, adminLevel, drawnPoly, data): #TODO: i
     changed_id = [p['prop_id'] for p in callback_context.triggered][0]
     drawROI = True if 'draw-roi' in changed_id else False 
     data = data or {'useAdmin': True, 'cityName': None}
-    print(drawnPoly)
+    # print(drawnPoly)
 
     if drawROI: # if use draw ROI
         roi = ee.FeatureCollection(drawnPoly).geometry()
@@ -96,7 +95,7 @@ def update_bp_tile(year, bp, ROIdata, city):
     if ROIdata is None:
         raise PreventUpdate
     mapid, bpData = get_bp_mapid(bp, city, year, ROIdata['roiBound'])
-    print('update_bp_tile')
+    # print('update_bp_tile')
     return bpData, get_tile_url(mapid)
 
 
@@ -127,7 +126,7 @@ def update_pop4def_tile(pop4def, year, data, ok, visMin, visMax):
         raise PreventUpdate
     pop4defImg, pop4def = get_pop4def_map(pop4def, year, data)
     mapid = get_pop4def_mapid(pop4defImg, visMin, visMax)
-    print('update_pop4def_tile')
+    # print('update_pop4def_tile')
     return get_tile_url(mapid), pop4def
 
 
@@ -150,7 +149,7 @@ def update_pop_tile(year, pop, ROIdata):
     if ROIdata is None:
         raise PreventUpdate
     mapid, popData = get_pg_mapid(pop, year, ROIdata['center'], ROIdata['roiBound'])
-    print('update_pop_tile')
+    # print('update_pop_tile')
     return get_tile_url(mapid), popData
 
 def flip_coords(coords):

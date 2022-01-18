@@ -4,16 +4,17 @@ from dash import html
 # visit http://127.0.0.1:8050/ in your web browser.
 import dash
 import dash_bootstrap_components as dbc
-import ee
+# import ee
 
-from apiConfig.eeAuth import credentials
-# ee.Authenticate()
-ee.Initialize(credentials)
+# from apiConfig.eeAuth import credentials
+# # ee.Authenticate()
+# ee.Initialize(credentials)
 
 from client.constants import CITY_CONFIGS
+from client.app import app, server
 from client.callbacks import *
 from client.layouts import layout   
-from client.app import app, server
+
 # logging.basicConfig(
 #     stream=sys.stdout, 
 #     level=logging.INFO,
@@ -25,7 +26,7 @@ from client.app import app, server
 
 
 app.layout = html.Div([
-    # dcc.Location(id='url', refresh=False),
+    dcc.Location(id='loc-url', refresh=False),
     layout
 ])
 
