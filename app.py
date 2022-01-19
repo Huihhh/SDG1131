@@ -32,5 +32,7 @@ app.layout = html.Div([
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    from waitress import serve
+    serve(server, host="0.0.0.0", port=8050)
+    # app.run_server(debug=True)
     # server.run(host="0.0.0.0", port=8050)
