@@ -38,12 +38,15 @@ def update_map_center(cityName, n_clicks, adminLevel, drawnPoly, data): #TODO: i
         cityCoords = roi.centroid()
         center = cityCoords.getInfo()['coordinates'][::-1]
         admin, adminName = get_admin(drawROI, cityName, cityCoords, adminLevel)
-        
-        if 'Shanghai' in adminName:
-            suzhouCity = ee.FeatureCollection('projects/gisproject-1/assets/Suzhou_admin')
-            roi = roi.difference(suzhouCity.geometry(), maxError=10000)
+        if len(drawnPoly['features']) > 1:        
+            if 'Shanghai' in adminName:
+                suzhouCity = ee.FeatureCollection('projects/gisproject-1/assets/Suzhou_admin')
+                roi = roi.difference(suzhouCity.geometry(), maxError=10000)
 
-        data.update({'useAdmin': False, 'adminName': adminName, 'center': cityCoords, 'roi': roi, 'roiBound': roi.bounds()})
+            data.update({'useAdmin': False, 'adminName': adminName, 'center': cityCoords, 'roi': roi, 'roiBound': roi.bounds()})
+        else:
+            data.update({'useAdmin': True, 'adminName': adminName, 'center': cityCoords, 'roi': admin, 'roiBound': admin.geometry().bounds()})
+        
     else: # use admin
         center = CITY_CONFIGS[cityName]['coords'][0][::-1]
         cityCoords = ee.Geometry.MultiPoint(CITY_CONFIGS[cityName]['coords'])

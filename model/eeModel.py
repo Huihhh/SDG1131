@@ -112,13 +112,12 @@ def get_pop_img(popData, cityCoords, cityBounds, year):
                             .clip(cityBounds)
 
 
-def define_city(pop4def, year, cityCoords, city, useAdmin):
+def define_city(pop4def, year, cityCoords, city, useAdmin, cellTH=300, clusterTH=5000):
     popRaster_raw = pop4def.queryImageByYearAndROI(year, cityCoords) \
                             .clip(city)
     #*************************************** Urban cluster **********************************************************#
     # filter out cells with pop counts smaller than 300 (1km) / 18.75 (250m)
-    uCluster_th = int(pop4def.cellTH)
-    popRasterMask = popRaster_raw.gt(uCluster_th).selfMask()
+    popRasterMask = popRaster_raw.gt(cellTH).selfMask()
 
     urbanCluster = popRasterMask.reduceToVectors(**{
                 'geometry': city,
@@ -135,7 +134,7 @@ def define_city(pop4def, year, cityCoords, city, useAdmin):
         'reducer': ee.Reducer.sum(),
         'scale': 1000,
             # filter out small clusters with a total pop counts less than 5000 \
-        }).filter(ee.Filter.gt('sum', int(pop4def.clusterTH)))#.map(computeAreaFromPoly) \
+        }).filter(ee.Filter.gt('sum', clusterTH))#.map(computeAreaFromPoly) \
         # .sort('area', False) \
         # .first()
         # .filter(ee.Filter.gt('area', 60))
@@ -183,7 +182,7 @@ def computeRate(startYear, endYear, valueStartYear, valueEndYear):
                     .subtract(ee.Number(valueStartYear).log()) \
                     .divide(endYear - startYear)
 
-def computeSDG(bpData, popData, startYear, endYear, cityDef):
+def computeSDG(bpData, popData, startYear, endYear, cityDef, cityDefT1):
     popStartYear = ee.Number(computePop(popData, startYear, cityDef))
     popEndYear = ee.Number(computePop(popData, endYear, cityDef))
 
@@ -197,11 +196,15 @@ def computeSDG(bpData, popData, startYear, endYear, cityDef):
     LCPCStartYear = ee.Number(bpStartYear).multiply(1e6).divide(ee.Number(popStartYear))
     LCPCEndYear = ee.Number(bpEndYear).multiply(1e6).divide(ee.Number(popEndYear))
 
-    TotalChangeInBuiltUp = ee.Number(bpEndYear).subtract(ee.Number(bpStartYear)).divide(ee.Number(bpStartYear))
+    TotalChangeInBuiltUp = deltaBp(startYear, endYear,cityDefT1, bpData)
     sdg = landComRate.divide(popGrowthRate)
     return ee.List([sdg, LCPCStartYear, LCPCEndYear, TotalChangeInBuiltUp, bpStartYear, bpEndYear, popStartYear, popEndYear, landComRate, popGrowthRate])
 
 
+def deltaBp(startYear, endYear, cityDefT1, bpData):
+    bpStartYear = computeArea(bpData, startYear, cityDefT1)
+    bpEndYear = computeArea(bpData, endYear, cityDefT1)
+    return ee.Number(bpEndYear).subtract(ee.Number(bpStartYear)).divide(ee.Number(bpStartYear))
 
 class Model:
     def __init__(self, popData=None, bpData=None, pop4def=None, startYear=None, endYear=None, useAdmin=True):

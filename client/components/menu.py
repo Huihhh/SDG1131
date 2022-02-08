@@ -4,6 +4,7 @@ import sd_material_ui as dm
 
 menubar = dbc.NavbarSimple(
     children=[
+        # dm.Avatar(),
         dbc.NavItem(dbc.NavLink("Login with Google", href="/login")),
         dbc.NavItem(id='profile'),
         ],
@@ -12,4 +13,4 @@ menubar = dbc.NavbarSimple(
     color="#595959",
     dark=True,
     fixed="top"
-    )
+)

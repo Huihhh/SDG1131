@@ -10,6 +10,13 @@ GHS_BUILT_38m = {
     'url': 'https://ghsl.jrc.ec.europa.eu/download.php?ds=bu', 
     'info': 'Coverage: global, Available years: 1975, 1990, 2000, 2015'
 }
+
+GHS_BUILT_30m = {
+    'name': 'GHS-Built 30m', 
+    'url': 'https://ghsl.jrc.ec.europa.eu/download.php?ds=bu', 
+    'info': 'Coverage: global, Available years: 1975, 1990, 2000, 2015'
+}
+
 GHS_BUILT_250m = {
     'name': 'GHS-Built 250m', 
     'url': 'https://ghsl.jrc.ec.europa.eu/download.php?ds=bu', 
