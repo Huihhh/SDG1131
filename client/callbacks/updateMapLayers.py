@@ -168,7 +168,7 @@ def flip_coords(coords):
 # ================================= Update City Definition =============================
 def get_cityDef(pop4def, year, ROIdata, cellTH, clusterTH):
     pop4def = DATASET[pop4def](cellTH, clusterTH)
-    cityDef = define_city(pop4def, int(year), ROIdata['center'], ROIdata['roi'], ROIdata['useAdmin'])
+    cityDef = define_city(pop4def, int(year), ROIdata['center'], ROIdata['roi'], ROIdata['useAdmin'], cellTH, clusterTH)
     mapid = cityDef.style(**{'color': 'blue', 'fillColor': "#ff000000"}).getMapId()['mapid']
     return mapid, cityDef
 
@@ -196,7 +196,7 @@ def update_cd_tile(year, pop4def, n_clicks, ROIdata, updateClick, cellTH, cluste
         cityDef = ee.Geometry.Polygon(features[-1]['props']['positions'])
         mapid = cityDef.style(**{'color': 'blue', 'fillColor': "#ff000000"}).getMapId()['mapid']
         return mapid, cityDef
-    mapid, cityDef = get_cityDef(pop4def, year, ROIdata, cellTH, clusterTH)
+    mapid, cityDef = get_cityDef(pop4def, year, ROIdata, int(cellTH), int(clusterTH))
     cityDefs.update({f'{pop4def}{year}': cityDef})
     return get_tile_url(mapid), cityDefs
 

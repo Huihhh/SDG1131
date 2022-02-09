@@ -18,3 +18,4 @@ file_system_store/
 **/data/
 .ssh/
 .vs/
+*.gsheet

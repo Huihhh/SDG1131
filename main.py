@@ -36,6 +36,42 @@ POP_DATA = {
     WORLD_POP_100m['name']: WorldPop100,
     SCB_POP['name']: SCBpop
 }
+add_cities = {
+    'Kampala': 
+        {'coords': [[32.5785, 0.3151]], 'adminLevel': 1, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Buenos Aires': 
+        {'coords': [[-58.399, -34.5978]], 'adminLevel': 1, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Quito': 
+        {'coords': [[-78.48, -0.1838]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Kolkata': 
+        {'coords': [[88.3599, 22.5953]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Accra': 
+        {'coords': [[-0.2065, 5.5827]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Halle': 
+        {'coords': [[11.9676, 51.4858]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Abu Dhabi': 
+        {'coords': [[54.3705, 24.4583]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Manama': 
+        {'coords': [[50.58419, 26.22262]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Kitchener-Cambridge-Waterloo': 
+        {'coords': [[-80.4857, 43.4427]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Batam': 
+        {'coords': [[104.0395, 1.1183]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Mogadishu': 
+        {'coords': [[45.3242, 2.0414]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Ouagadougou': 
+        {'coords': [[-1.5217, 12.3538]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Xiamen': 
+        {'coords': [[118.1305, 24.4874]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Yinchuan': 
+        {'coords': [[106.2275, 38.4676]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Niamey': 
+        {'coords': [[2.1232, 13.5168]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Dodoma': 
+        {'coords': [[35.7471, -6.1753]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+    'Lilongwe': 
+        {'coords': [[33.7665, -13.9639]], 'adminLevel': 2, 'bp_density_th': 40, 'cellTH':300, 'clusterTH': 5000},
+}
 
 cities = {
     'Stockholm': 
@@ -97,7 +133,7 @@ def main(CFG):
     statsList = []
     assetConfis = []
 
-    for name, geo in cities.items():
+    for name, geo in add_cities.items():
         print(f'========================= {name} =======================')
         bpData = BP_DATA[CFG['bp']](th=geo['bp_density_th'])
         for idx, p in enumerate(periods):

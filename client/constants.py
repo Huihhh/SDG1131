@@ -75,7 +75,7 @@ SCB_POP = {
     'info': ''
 }
 
-BP_DATA = [GHS_BUILT_38m,  WSFevo_30m, WSF1519_10m, GAIA_10m] # GHS_BUILT_250m, WSF_30m
+BP_DATA = [GHS_BUILT_30m, GHS_BUILT_38m,  WSFevo_30m, WSF1519_10m, GAIA_10m] # GHS_BUILT_250m, WSF_30m
 PG_DATA = [WORLD_POP_100m, GHS_POP_250m, GPWV4_30arc]
 CD_DATA = [GHS_POP_1km, GPWV4_30arc, WORLD_POP_1km]
 
@@ -84,6 +84,7 @@ DATASET = {
     ## Builtup data
     GAIA_10m['name']: GAIA,
     GHS_BUILT_38m['name']: GHSbp38,
+    GHS_BUILT_30m['name']: GHSbp30,
     # GHS_BUILT_250m['name']: GHSbp250,
     WSFevo_30m['name']: WSF_evolution,
     WSF1519_10m['name']: WSF1519,

@@ -26,13 +26,17 @@ gspread = Gspread(sheet_name='City_Definition_SDG11.3.1_Calculations') #TODO: SQ
     State('pop-radioItem', 'value'),
     State('pop4def-radioItem', 'value'),
     State('cityDef-obj', 'data'),
+    State('cell-TH-state', 'value'),
+    State('cluster-TH-state', 'value'), 
     prevent_initial_call=True, 
 )
-def update_sdg_results(n_click, startYear, endYear, adminLevel, ROIdata, bpName, popName, pop4defName, cityDefs):
+def update_sdg_results(n_click, startYear, endYear, adminLevel, ROIdata, bpName, popName, pop4defName, cityDefs, cellTH, clusterTH):
     bpData = DATASET[bpName]()
     popData = DATASET[popName]()
+    pop4def = DATASET[pop4defName]()
     cityDef = cityDefs[pop4defName+str(endYear)]#TODO add error message
-    res = computeSDG(bpData, popData, startYear, endYear, cityDef).getInfo()
+    cityDefT1 = define_city(pop4def, int(startYear), ROIdata['center'], ROIdata['roi'], ROIdata['useAdmin'], int(cellTH), int(clusterTH))
+    res = computeSDG(bpData, popData, startYear, endYear, cityDef, cityDefT1).getInfo()
     resList = dcc.Markdown(f'''
     * **SDG 11.3.1**: {res[0]}
     * **LCPCStartYear**: {res[1]}
