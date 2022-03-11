@@ -20,6 +20,8 @@ def get_tile_url(mapid):
     Output("compare-map", "center"),
     ServersideOutput("map-center", 'data'),
     Output('admin-boundary', 'url'),
+    Output('cell-TH-state', 'value'),
+    Output('cluster-TH-state', 'value'),   
     # Output('roi-bounds', 'data'),
     Input('city-single-select', 'value'),
     Input('draw-roi', 'n_clicks'),
@@ -48,16 +50,17 @@ def update_map_center(cityName, n_clicks, adminLevel, drawnPoly, data): #TODO: i
 
             data.update({'useAdmin': False, 'adminName': adminName, 'center': cityCoords, 'roi': roi, 'roiBound': roi.bounds()})
         
-    else: # use admin
+    else: # user selects a city from the list
         center = CITY_CONFIGS[cityName]['coords'][0][::-1]
         cityCoords = ee.Geometry.MultiPoint(CITY_CONFIGS[cityName]['coords'])
         admin, adminName = get_admin(drawROI, cityName, cityCoords, adminLevel)
+        roi = ee.Geometry.Polygon(CITY_CONFIGS[cityName]['bound'])
 
-        data.update({'useAdmin': True, 'adminName': adminName, 'center': cityCoords, 'roi':admin, 'roiBound': admin.geometry().bounds()})
+        data.update({'useAdmin': False, 'adminName': adminName, 'center': cityCoords, 'roi':roi, 'roiBound': admin.geometry().bounds()})
     mapid = admin.style(**{'color': '#99ccff', 'fillColor': "#ff000000"}).getMapId()['mapid'] 
     pop4def = DATASET['GHS-Pop 1km']()
     data.update({'test': pop4def})
-    return center, center, data, get_tile_url(mapid)
+    return center, center, data, get_tile_url(mapid), CITY_CONFIGS[cityName]['cellTH'], CITY_CONFIGS[cityName]['clusterTH']
 
 
 # ================================= Update base image =============================
@@ -81,7 +84,7 @@ def update_base_tile(year, data):
 # ================================= Update builtup image =============================
 # @functools.lru_cache(maxsize=32)
 def get_bp_mapid(bp, city, year, cityBounds):
-    bpData = DATASET[bp](th = CITY_CONFIGS[city]['bp_density_th'])
+    bpData = DATASET[bp]()
     mapid = bpData.queryImageByYearAndROI(int(year), cityBounds).visualize(**bpData.visParam).getMapId()['mapid']
     return mapid, bpData
 
