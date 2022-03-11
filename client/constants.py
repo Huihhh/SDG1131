@@ -131,7 +131,7 @@ ADMIN_LEVEL = [
 ]
 
 COLUMNS = ['Tool', 'T1', 'T2', 'AOI', 'FAO Level', 'City Definition', 'Population', 'Built-Up', 'SDG 11.3.1', 'Built/Capita - T1', 'Built/Capita - T2', 'Delta Built Up', 'SUM BU T1', 'SUM BU T2', 'pop - T1', 'pop - T2', 'landComRate', 'popGrowthRate']
-CITIES = ['Stockholm', 'Dubai', 'Guangzhou', 'Beijing', 'Mumbai', 'Nairobi', 'Kigali', 'Lagos', 'Mexico City', 'Rio de Janeiro', 'New York', 'Shanghai', 'Detroit', 'Charleston', 'Cairo', 'Dar Es Salaam', 'Heidelberg', 'La Paz', 'Nouakchott', 'Sydney', 'Tianjin', 'Karachi', 'Islamabad']
+
 
 
 CITY_CONFIGS = {
@@ -311,5 +311,5 @@ CITY_CONFIGS = {
           'bound': [[33.32976973259878,-13.564054261557082],[33.32976973259878,-14.432839733817472],[34.17297041619253,-14.432839733817472],[34.17297041619253,-13.564054261557082]]
         }, 
 }
-
+CITIES = CITY_CONFIGS.keys()
 
